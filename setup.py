@@ -27,4 +27,11 @@ setup(
     zip_safe=False,
     long_description=readme,
     license=license,
+
+    entry_points={
+        'console_scripts': [
+            'parktain=parktain.main:main',
+        ],
+    }
+
 )
