@@ -1,1 +1,1 @@
--e git+git@github.com:nficano/gendo.git#egg=gendo
+-e git+git@github.com:punchagan/gendo.git#egg=gendo
