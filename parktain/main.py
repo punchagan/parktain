@@ -4,15 +4,14 @@
 from datetime import datetime
 from os.path import abspath, dirname, join
 import re
-from datetime import datetime
 from urllib.parse import urlparse
 
 # 3rd party library
 from gendo import Gendo
-
-# sqlalchemey stuff
-from models import Base, engine, Message
 from sqlalchemy.orm import sessionmaker
+
+# Local library
+from models import Base, engine, Message
 
 Session = sessionmaker(bind=engine)
 session = Session()
