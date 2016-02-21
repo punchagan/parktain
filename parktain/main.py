@@ -68,8 +68,8 @@ def checkins_reminder():
 
 @bot.listen_for(lambda user, channel, message: True)
 def logger(user, channel, message):
-    message = Message(user_id=user, channel_id=channel, message=message, timestamp=datetime.now())
-    session.add(message)
+    message_log = Message(user_id=user, channel_id=channel, message=message, timestamp=datetime.now())
+    session.add(message_log)
     session.commit()
 
 def main():
