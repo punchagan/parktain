@@ -46,12 +46,7 @@ def is_mention(f):
     return wrapped
 
 
-@bot.listen_for('morning')
-def morning(user, message):
-    # make sure message is "morning" and doesn't just contain it.
-    if message.strip() == "morning":
-        return "mornin' @{user.username}"
-
+#### Bot Functions ############################################################
 
 @bot.listen_for('where do you live')
 @is_mention
