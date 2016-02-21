@@ -16,6 +16,6 @@ class Message(Base):
     message = Column(String(4096))
     timestamp = Column(DateTime)
     
-    def __repr__(self):
+    def __str__(self):
         return "<Message(user='%s' said='%s' in channel='%s')>" % (
             self.user_id, self.message, self.channel_id)
