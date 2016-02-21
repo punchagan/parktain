@@ -11,7 +11,7 @@ from gendo import Gendo
 from sqlalchemy.orm import sessionmaker
 
 # Local library
-from models import Base, engine, Message
+from parktain.models import Base, engine, Message
 
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -65,11 +65,22 @@ def checkins_reminder():
     date = datetime.now().strftime('%d %B, %Y')
     bot.speak('Morning! What are you doing on {}!'.format(date), "#checkins")
 
-@bot.listen_for(lambda user, channel, message: True)
+@bot.listen_for(lambda user, channel, message: True, target_channel='clickbaits')
 def logger(user, channel, message):
     message_log = Message(user_id=user, channel_id=channel, message=message, timestamp=datetime.now())
     session.add(message_log)
     session.commit()
+
+    # Check for presence of HyperLink in message
+    if user == bot.id:
+        return
+    for word in message.split():
+        try:
+            o = urlparse(word[1:-1])
+            if o.netloc:
+                return '@{user.username} shared "%s"' %message
+        except IndexError:
+            pass
 
 def main():
     Base.metadata.create_all(engine)
