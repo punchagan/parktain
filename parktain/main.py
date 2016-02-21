@@ -4,10 +4,17 @@
 from datetime import datetime
 from os.path import abspath, dirname, join
 import re
+from urllib.parse import urlparse
 
 # 3rd party library
 from gendo import Gendo
+from sqlalchemy.orm import sessionmaker
 
+# Local library
+from models import Base, engine, Message
+
+Session = sessionmaker(bind=engine)
+session = Session()
 
 class Parktain(Gendo):
     """Overridden to add simple additional functionality."""
@@ -27,8 +34,6 @@ class Parktain(Gendo):
         if not hasattr(self, '_username',):
             self._username = self.client.server.username
         return self.username
-
-
 
 HERE = dirname(abspath(__file__))
 config_path = join(HERE, 'config.yaml')
@@ -55,19 +60,19 @@ def source_code(user, channel, message):
     message = 'Well, I live in your hearts...\nYou can change me from here {}, though.'
     return message.format(repo_url)
 
-
 @bot.cron('0 5 * * *')
 def checkins_reminder():
     date = datetime.now().strftime('%d %B, %Y')
     bot.speak('Morning! What are you doing on {}!'.format(date), "#checkins")
 
-
 @bot.listen_for(lambda user, channel, message: True)
 def logger(user, channel, message):
-    print(user, channel, message)
-
+    message_log = Message(user_id=user, channel_id=channel, message=message, timestamp=datetime.now())
+    session.add(message_log)
+    session.commit()
 
 def main():
+    Base.metadata.create_all(engine)
     bot.run()
 
 if __name__ == '__main__':
