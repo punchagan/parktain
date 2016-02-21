@@ -59,7 +59,7 @@ def source_code(user, message):
 @bot.cron('0 5 * * *')
 def checkins_reminder():
     date = datetime.now().strftime('%d %B, %Y')
-    bot.speak('Morning! What are you doing on {}!'.date(date), "#checkins")
+    bot.speak('Morning! What are you doing on {}!'.format(date), "#checkins")
 
 
 def main():
