@@ -37,11 +37,11 @@ bot = Parktain.config_from_yaml(config_path)
 def is_mention(f):
     """Decorator to check if bot is mentioned."""
 
-    def wrapped(name, message):
+    def wrapped(user, channel, message):
         BOT_ID_RE = re.compile('<@{}>'.format(bot.id))
         mention = BOT_ID_RE.search(message) is not None
         if mention:
-            return f(name, message)
+            return f(user, channel, message)
 
     return wrapped
 
@@ -50,7 +50,7 @@ def is_mention(f):
 
 @bot.listen_for('where do you live')
 @is_mention
-def source_code(user, message):
+def source_code(user, channel, message):
     repo_url = 'https://github.com/punchagan/parktain'
     message = 'Well, I live in your hearts...\nYou can change me from here {}, though.'
     return message.format(repo_url)
