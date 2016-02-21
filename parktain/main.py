@@ -62,6 +62,11 @@ def checkins_reminder():
     bot.speak('Morning! What are you doing on {}!'.format(date), "#checkins")
 
 
+@bot.listen_for(lambda user, channel, message: True)
+def logger(user, channel, message):
+    print(user, channel, message)
+
+
 def main():
     bot.run()
 
