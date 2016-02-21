@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # Standard library
+from datetime import datetime
 from os.path import abspath, dirname, join
 import re
 
@@ -58,6 +59,12 @@ def source_code(user, message):
     repo_url = 'https://github.com/punchagan/parktain'
     message = 'Well, I live in your hearts...\nYou can change me from here {}, though.'
     return message.format(repo_url)
+
+
+@bot.cron('0 5 * * *')
+def checkins_reminder():
+    date = datetime.now().strftime('%d %B, %Y')
+    bot.speak('Morning! What are you doing on {}!'.date(date), "#checkins")
 
 
 def main():
