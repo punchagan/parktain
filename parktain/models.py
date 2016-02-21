@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, Integer
+from sqlalchemy import Column, String, DateTime, Integer, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 
 engine = create_engine('sqlite:///slack-archives.db')
