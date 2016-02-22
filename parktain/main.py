@@ -41,7 +41,7 @@ def source_code(user, channel, message):
     message = 'Well, I live in your hearts...\nYou can change me from here {}, though.'
     return message.format(repo_url)
 
-@bot.cron('0 5 * * *')
+@bot.cron('0 0 * * *')
 def checkins_reminder():
     date = datetime.now().strftime('%d %B, %Y')
     bot.speak('Morning! What are you doing on {}!'.format(date), "#checkins")
