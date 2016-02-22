@@ -16,28 +16,9 @@ from models import Base, engine, Message
 Session = sessionmaker(bind=engine)
 session = Session()
 
-class Parktain(Gendo):
-    """Overridden to add simple additional functionality."""
-
-    @property
-    def id(self):
-        """Get id of the bot."""
-
-        if not hasattr(self, '_id',):
-            self._id = self.client.server.login_data['self']['id']
-        return self._id
-
-    @property
-    def username(self):
-        """Get username of the bot."""
-
-        if not hasattr(self, '_username',):
-            self._username = self.client.server.username
-        return self.username
-
 HERE = dirname(abspath(__file__))
 config_path = join(HERE, 'config.yaml')
-bot = Parktain.config_from_yaml(config_path)
+bot = Gendo.config_from_yaml(config_path)
 
 def is_mention(f):
     """Decorator to check if bot is mentioned."""
