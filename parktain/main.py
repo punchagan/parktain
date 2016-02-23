@@ -64,6 +64,18 @@ def link_repost(user, channel, message):
     """Repost links in any channel to target_channel."""
     return '@{user.username} shared "%s" in {channel.name}' % message
 
+@bot.handle_event('channel_created', target_channel='general')
+def notify_general(event_data):
+    user = event_data['channel']['creator']
+    channel = event_data['channel']['id']
+    invite_me = (
+        "Unfortunately, I can't join the channel automatically. "
+        "If you want logging and other fancy features, invite me.\n"
+        "/invite @{} {{channel.name}}".format(bot.username)
+    )
+    response = '{{user.username}} created {{channel.name}}.\n{}'.format(invite_me)
+    return user, channel, response
+
 def main():
     Base.metadata.create_all(engine)
     bot.run()
