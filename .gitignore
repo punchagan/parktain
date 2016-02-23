@@ -63,3 +63,12 @@ target/
 
 # Ignore config file
 config.yaml
+
+# Ignore and db file
+*.db
+
+# gtags file
+TAGS
+
+# autoenv file.
+.env
