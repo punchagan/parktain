@@ -62,7 +62,7 @@ def logger(user, channel, message):
 @bot.listen_for(message_has_url, target_channel='clickbaits', ignore_channels=['clickbaits'])
 def link_repost(user, channel, message):
     """Repost links in any channel to target_channel."""
-    return '@{user.username} shared "%s"' % message
+    return '@{user.username} shared "%s" in {channel.name}' % message
 
 def main():
     Base.metadata.create_all(engine)
