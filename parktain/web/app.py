@@ -15,13 +15,9 @@ def get_app_config():
     with open(path_to_yaml, 'r') as ymlfile:
         web = yaml.load(ymlfile).get('web')
 
-    if not web:
-        web = {'client_id': '', 'client_secret': '', 'secret_key': ''}
+    default = {'client_id': '', 'client_secret': '', 'secret_key': ''}
+    return web or default
 
-    return web
-
-## NOTE: When running locally, export OAUTHLIB_INSECURE_TRANSPORT=1
-## See: http://flask-dance.readthedocs.org/en/latest/quickstarts/slack.html
 
 config = get_app_config()
 app = Flask(__name__)
@@ -39,5 +35,12 @@ def index():
         return redirect(url_for("slack.login"))
     return 'Hello, there!'
 
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    # See: http://flask-dance.readthedocs.org/en/latest/quickstarts/slack.html
+    # openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout web.key -out web.crt
+    # NOTE: When running locally, export OAUTHLIB_INSECURE_TRANSPORT=1 if you
+    # don't want to create certificates, etc. Comment the context from below.
+    context = (join(HERE, 'keys', 'web.crt'), join(HERE, 'keys', 'web.key'))
+    app.run(debug=True, ssl_context=context)
