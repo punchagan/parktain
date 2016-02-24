@@ -1,2 +1,6 @@
 -e git+git@github.com:punchagan/gendo.git#egg=gendo
 SQLAlchemy==1.0.12
+
+# Web app requirements
+Flask==0.10.1
+Flask-Dance==0.8.2
