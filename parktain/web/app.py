@@ -88,4 +88,4 @@ if __name__ == "__main__":
     # NOTE: When running locally, export OAUTHLIB_INSECURE_TRANSPORT=1 if you
     # don't want to create certificates, etc. Comment the context from below.
     ssl_context = (join(HERE, 'keys', 'web.crt'), join(HERE, 'keys', 'web.key'))
-    app.run(debug=True, ssl_context=ssl_context)
+    app.run(host='0.0.0.0', debug=True, ssl_context=ssl_context)
