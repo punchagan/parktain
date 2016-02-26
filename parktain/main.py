@@ -41,28 +41,16 @@ def message_has_url(user, channel, message):
 
 #### Bot Functions ############################################################
 
-@bot.listen_for('where do you live')
-@is_mention
-def source_code(user, channel, message):
-    repo_url = 'https://github.com/punchagan/parktain'
-    message = 'Well, I live in your hearts...\nYou can change me from here {}, though.'
-    return message.format(repo_url)
-
-@bot.cron('0 0 * * *')
-def checkins_reminder():
-    date = datetime.now().strftime('%d %B, %Y')
-    bot.speak('Morning! What are you doing on {}!'.format(date), "#checkins")
+@bot.listen_for(message_has_url, target_channel='clickbaits', ignore_channels=['clickbaits'])
+def link_repost(user, channel, message):
+    """Repost links in any channel to target_channel."""
+    return '@{user.username} shared "%s" in {channel.name}' % message
 
 @bot.listen_for(all_messages)
 def logger(user, channel, message):
     message_log = Message(user_id=user, channel_id=channel, message=message, timestamp=datetime.now())
     session.add(message_log)
     session.commit()
-
-@bot.listen_for(message_has_url, target_channel='clickbaits', ignore_channels=['clickbaits'])
-def link_repost(user, channel, message):
-    """Repost links in any channel to target_channel."""
-    return '@{user.username} shared "%s" in {channel.name}' % message
 
 @bot.handle_event('channel_created', target_channel='general')
 def notify_general(event_data):
@@ -75,6 +63,21 @@ def notify_general(event_data):
     )
     response = '{{user.username}} created {{channel.name}}.\n{}'.format(invite_me)
     return user, channel, response
+
+@bot.listen_for('where do you live')
+@is_mention
+def source_code(user, channel, message):
+    repo_url = 'https://github.com/punchagan/parktain'
+    message = 'Well, I live in your hearts...\nYou can change me from here {}, though.'
+    return message.format(repo_url)
+
+#### Cron functions ###########################################################
+
+@bot.cron('0 0 * * *')
+def checkins_reminder():
+    date = datetime.now().strftime('%d %B, %Y')
+    bot.speak('Morning! What are you doing on {}!'.format(date), "#checkins")
+
 
 def main():
     Base.metadata.create_all(engine)
