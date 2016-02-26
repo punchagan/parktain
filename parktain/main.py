@@ -2,6 +2,7 @@
 
 # Standard library
 from datetime import datetime
+import json
 from os.path import abspath, dirname, join
 import re
 
@@ -10,14 +11,22 @@ from gendo import Gendo
 from sqlalchemy.orm import sessionmaker
 
 # Local library
-from parktain.models import Base, engine, Message
+from parktain.models import Base, Channel, engine, Message
 
 Session = sessionmaker(bind=engine)
 session = Session()
 
 HERE = dirname(abspath(__file__))
+URL_RE = re.compile('<(https{0,1}://.*?)>')
+
 config_path = join(HERE, 'config.yaml')
 bot = Gendo.config_from_yaml(config_path)
+
+#### Helper functions #########################################################
+
+def all_messages(user, channel, message):
+    return True
+
 
 def is_mention(f):
     """Decorator to check if bot is mentioned."""
@@ -31,13 +40,32 @@ def is_mention(f):
     return wrapped
 
 
-def all_messages(user, channel, message):
-    return True
-
-URL_RE = re.compile('<(https{0,1}://.*?)>')
-
 def message_has_url(user, channel, message):
     return URL_RE.search(message) is not None
+
+
+def update_channels_list():
+    """Update the list of channels from slack."""
+
+    channels_ = bot.client.api_call('channels.list')
+    channels = json.loads(channels_.decode('utf8'))['channels']
+
+    # Do shady calls on bot.client!
+    for channel in channels:
+        id_ = channel['id']
+        name = channel['name']
+        num_members = channel['num_members']
+
+        channel_obj = session.query(Channel).get(id_)
+        if channel_obj is None:
+            channel_obj = Channel(id=id_, name=name, num_members=num_members)
+            session.add(channel_obj)
+
+        else:
+            channel_obj.name = name
+            channel_obj.num_members = num_members
+
+    session.commit()
 
 #### Bot Functions ############################################################
 
@@ -77,6 +105,15 @@ def source_code(user, channel, message):
 def checkins_reminder():
     date = datetime.now().strftime('%d %B, %Y')
     bot.speak('Morning! What are you doing on {}!'.format(date), "#checkins")
+
+
+# Run updates on information from slack, every hour.
+@bot.cron('* */1 * * *')
+def update_info():
+    """Update information about slack channels and users."""
+
+    update_channels_list()
+    # FIXME: Update users list.
 
 
 def main():
