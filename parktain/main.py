@@ -90,11 +90,6 @@ def update_user_list():
 
 #### Bot Functions ############################################################
 
-@bot.listen_for(message_has_url, target_channel='clickbaits', ignore_channels=['clickbaits'])
-def link_repost(user, channel, message):
-    """Repost links in any channel to target_channel."""
-    return '@{user.username} shared "%s" in {channel.name}' % message
-
 @bot.listen_for(all_messages)
 def logger(user, channel, message):
     message_log = Message(user_id=user, channel_id=channel, message=message, timestamp=datetime.now())
