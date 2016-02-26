@@ -13,6 +13,16 @@ engine.echo = False
 
 Base = declarative_base()
 
+class Channel(Base):
+    __tablename__ = 'channels'
+    id = Column(String, primary_key=True, index=True)
+    name = Column(String, nullable=False, index=True)
+    num_members = Column(Integer, nullable=False)
+
+    def __str__(self):
+        return "<{self.id}|{self.name}>".format(**{'self': self})
+
+
 class Message(Base):
     __tablename__ = 'messages'
     id = Column(Integer(), primary_key=True, autoincrement=True)
@@ -26,11 +36,10 @@ class Message(Base):
             self.user_id, self.message, self.channel_id)
 
 
-class Channel(Base):
-    __tablename__ = 'channels'
+class User(Base):
+    __tablename__ = 'users'
     id = Column(String, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
-    num_members = Column(Integer, nullable=False)
 
     def __str__(self):
         return "<{self.id}|{self.name}>".format(**{'self': self})

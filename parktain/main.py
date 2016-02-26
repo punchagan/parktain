@@ -11,7 +11,7 @@ from gendo import Gendo
 from sqlalchemy.orm import sessionmaker
 
 # Local library
-from parktain.models import Base, Channel, engine, Message
+from parktain.models import Base, Channel, engine, Message, User
 
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -50,7 +50,6 @@ def update_channels_list():
     channels_ = bot.client.api_call('channels.list')
     channels = json.loads(channels_.decode('utf8'))['channels']
 
-    # Do shady calls on bot.client!
     for channel in channels:
         id_ = channel['id']
         name = channel['name']
@@ -66,6 +65,28 @@ def update_channels_list():
             channel_obj.num_members = num_members
 
     session.commit()
+
+
+def update_user_list():
+    """Update the list of users from slack."""
+
+    users_ = bot.client.api_call('users.list')
+    users = json.loads(users_.decode('utf8'))['members']
+
+    for user in users:
+        id_ = user['id']
+        name = user['name']
+
+        user_obj = session.query(User).get(id_)
+        if user_obj is None:
+            user_obj = User(id=id_, name=name)
+            session.add(user_obj)
+
+        else:
+            user_obj.name = name
+
+    session.commit()
+
 
 #### Bot Functions ############################################################
 
@@ -113,11 +134,12 @@ def update_info():
     """Update information about slack channels and users."""
 
     update_channels_list()
-    # FIXME: Update users list.
+    update_user_list()
 
 
 def main():
     Base.metadata.create_all(engine)
+    update_info()
     bot.run()
 
 if __name__ == '__main__':
