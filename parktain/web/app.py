@@ -11,7 +11,7 @@ import yaml
 
 # Local library
 from parktain.main import session, URL_RE
-from parktain.models import Channel, Message, User
+from parktain.models import Base, Channel, engine, Message, User
 from parktain.web.utils import format_slack_message, get_id_name_mapping_from_db
 
 HERE = dirname(abspath(__file__))
@@ -83,6 +83,7 @@ def show_links(days=0):
 
 
 if __name__ == "__main__":
+    Base.metadata.create_all(engine)
     # See: http://flask-dance.readthedocs.org/en/latest/quickstarts/slack.html
     # openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout web.key -out web.crt
     # NOTE: When running locally, export OAUTHLIB_INSECURE_TRANSPORT=1 if you
