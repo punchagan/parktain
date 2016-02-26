@@ -12,7 +12,7 @@ import yaml
 # Local library
 from parktain.main import session, URL_RE
 from parktain.models import Channel, Message, User
-
+from parktain.web.utils import format_slack_message, get_id_name_mapping_from_db
 
 HERE = dirname(abspath(__file__))
 
@@ -23,11 +23,6 @@ def get_app_config():
 
     default = {'client_id': '', 'client_secret': '', 'secret_key': ''}
     return web or default
-
-def get_id_name_mapping_from_db(session, cls):
-    """ Return a mapping of id to name for cls objects in DB."""
-
-    return {obj.id: obj.name for obj in session.query(cls).all()}
 
 
 config = get_app_config()
@@ -76,7 +71,7 @@ def show_links(days=0):
                 'title': title,
                 'user': users.get(message.user_id, '<deleted-user>'),
                 'channel': channels.get(message.channel_id, '<deleted-channel>'),
-                'message': message.message,
+                'message': format_slack_message(message.message, channels, users),
                 'timestamp': message.timestamp
             }
 
