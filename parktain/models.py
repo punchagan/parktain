@@ -24,3 +24,13 @@ class Message(Base):
     def __str__(self):
         return "<Message(user='%s' said='%s' in channel='%s')>" % (
             self.user_id, self.message, self.channel_id)
+
+
+class Channel(Base):
+    __tablename__ = 'channels'
+    id = Column(String, primary_key=True, index=True)
+    name = Column(String, nullable=False, index=True)
+    num_members = Column(Integer, nullable=False)
+
+    def __str__(self):
+        return "<{self.id}|{self.name}>".format(**{'self': self})
