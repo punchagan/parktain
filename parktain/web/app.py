@@ -5,7 +5,7 @@ import datetime
 from os.path import abspath, dirname, join
 
 # 3rd party library.
-from flask import Flask, redirect, Response, url_for
+from flask import Flask, redirect, render_template, Response, url_for
 from flask_dance.contrib.slack import make_slack_blueprint, slack
 import yaml
 
@@ -45,27 +45,36 @@ def index():
 
 @app.route("/links")
 @app.route("/links/<days>")
-def links(days=0):
+def show_links(days=0):
     if not slack.authorized:
         return redirect(url_for("slack.login"))
 
     day = datetime.datetime.utcnow().date() - datetime.timedelta(days=int(days))
     next_ = day + datetime.timedelta(days=1)
-    days_messages = session.query(Message).filter(day < Message.timestamp).filter(Message.timestamp < next_)
-    url_messages = [
-        message for message in
-        days_messages.order_by(Message.timestamp).all()
-        if URL_RE.search(message.message) is not None
-    ]
-    formatted_messages = [
-        '{M.user_id}: {M.message}\n{M.timestamp}\n\n'.format(**{'M': M})
-        for M in url_messages
-    ]
+    days_messages = session.query(Message).filter(day < Message.timestamp).filter(Message.timestamp < next_).order_by(Message.timestamp).all()
+    links = []
 
-    response = Response('\n\n'.join(formatted_messages))
-    response.headers['Content-Type'] = 'text/plain; charset=utf-8'
+    for message in days_messages:
+        for url in URL_RE.findall(message.message):
+            if '|' in url:
+                url, title = url.split('|', 1)
+            else:
+                title = url
 
-    return response
+            link = {
+                'url': url,
+                'title': title,
+                'user': message.user_id,
+                'channel': message.channel_id,
+                'message': message.message,
+                'timestamp': message.timestamp
+            }
+
+            links.append(link)
+
+    context = {'links': links, 'date': day}
+
+    return render_template('clickbaits.html', **context)
 
 
 if __name__ == "__main__":
@@ -73,5 +82,5 @@ if __name__ == "__main__":
     # openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout web.key -out web.crt
     # NOTE: When running locally, export OAUTHLIB_INSECURE_TRANSPORT=1 if you
     # don't want to create certificates, etc. Comment the context from below.
-    context = (join(HERE, 'keys', 'web.crt'), join(HERE, 'keys', 'web.key'))
-    app.run(debug=True, ssl_context=context)
+    ssl_context = (join(HERE, 'keys', 'web.crt'), join(HERE, 'keys', 'web.key'))
+    app.run(debug=True, ssl_context=ssl_context)
