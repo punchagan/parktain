@@ -10,7 +10,9 @@ from flask_dance.contrib.slack import make_slack_blueprint, slack
 import yaml
 
 # Local library
-from parktain.main import Message, session, URL_RE
+from parktain.main import session, URL_RE
+from parktain.models import Channel, Message, User
+
 
 HERE = dirname(abspath(__file__))
 
@@ -21,6 +23,11 @@ def get_app_config():
 
     default = {'client_id': '', 'client_secret': '', 'secret_key': ''}
     return web or default
+
+def get_id_name_mapping_from_db(session, cls):
+    """ Return a mapping of id to name for cls objects in DB."""
+
+    return {obj.id: obj.name for obj in session.query(cls).all()}
 
 
 config = get_app_config()
@@ -54,6 +61,9 @@ def show_links(days=0):
     days_messages = session.query(Message).filter(day < Message.timestamp).filter(Message.timestamp < next_).order_by(Message.timestamp).all()
     links = []
 
+    channels = get_id_name_mapping_from_db(session, Channel)
+    users = get_id_name_mapping_from_db(session, User)
+
     for message in days_messages:
         for url in URL_RE.findall(message.message):
             if '|' in url:
@@ -64,8 +74,8 @@ def show_links(days=0):
             link = {
                 'url': url,
                 'title': title,
-                'user': message.user_id,
-                'channel': message.channel_id,
+                'user': users.get(message.user_id, '<deleted-user>'),
+                'channel': channels.get(message.channel_id, '<deleted-channel>'),
                 'message': message.message,
                 'timestamp': message.timestamp
             }

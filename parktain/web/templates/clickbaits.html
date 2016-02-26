@@ -6,7 +6,7 @@
 {% for link in links %}
   <div>
     <div>
-      <span><a href="{{ link.url }}">{{ link.title }}</a><span> by {{link.user}} in {{link.channel}} at {{link.timestamp}}
+      <span><a href="{{ link.url }}">{{ link.title }}</a><span> by @{{link.user}} in #{{link.channel}} at {{link.timestamp}}
     </div>
     <div>
       <small>{{link.message}}</small>
