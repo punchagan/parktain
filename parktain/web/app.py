@@ -5,7 +5,7 @@ import datetime
 from os.path import abspath, dirname, join
 
 # 3rd party library.
-from flask import Flask, redirect, render_template, Response, url_for
+from flask import Flask, redirect, render_template, url_for
 from flask_dance.contrib.slack import make_slack_blueprint, slack
 import yaml
 
@@ -88,5 +88,4 @@ if __name__ == "__main__":
     # openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout web.key -out web.crt
     # NOTE: When running locally, export OAUTHLIB_INSECURE_TRANSPORT=1 if you
     # don't want to create certificates, etc. Comment the context from below.
-    ssl_context = (join(HERE, 'keys', 'web.crt'), join(HERE, 'keys', 'web.key'))
-    app.run(host='0.0.0.0', debug=True, ssl_context=ssl_context)
+    app.run(host='0.0.0.0', debug=True)
