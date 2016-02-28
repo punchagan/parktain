@@ -47,7 +47,7 @@ def index():
 
 
 
-@app.route("/links")
+@app.route("/links/")
 @app.route("/links/<days>")
 def show_links(days=0):
     if not slack.authorized:
