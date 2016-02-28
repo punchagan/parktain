@@ -42,7 +42,9 @@ app.register_blueprint(blueprint, url_prefix="/login")
 def index():
     if not slack.authorized:
         return redirect(url_for("slack.login"))
-    return 'Hello, there!'
+    context = {}
+    return render_template('index.html', **context)
+
 
 
 @app.route("/links")
