@@ -92,7 +92,12 @@ def update_user_list():
 
 @bot.listen_for(all_messages)
 def logger(user, channel, message):
-    message_log = Message(user_id=user, channel_id=channel, message=message, timestamp=datetime.now())
+    message_log = Message(
+        user_id=user or 'USLACKBOT',
+        channel_id=channel,
+        message=message,
+        timestamp=datetime.now()
+    )
     session.add(message_log)
     session.commit()
 
