@@ -3,7 +3,7 @@
 # Standard library
 from datetime import datetime
 import json
-from os.path import abspath, dirname, join
+from os.path import abspath, dirname, exists, join
 import re
 
 # 3rd party library
@@ -20,7 +20,7 @@ HERE = dirname(abspath(__file__))
 URL_RE = re.compile('<(https{0,1}://.*?)>')
 
 config_path = join(HERE, 'config.yaml')
-bot = Gendo.config_from_yaml(config_path)
+bot = Gendo.config_from_yaml(config_path) if exists(config_path) else Gendo()
 
 #### Helper functions #########################################################
 
