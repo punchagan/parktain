@@ -6,8 +6,8 @@ A slack bot for the park-ers
 Create a virtualenv and activate it(recommended):
 
     virtualenv mydir
-    cd mydir
-    source activate/bin
+
+    source mydir/activate/bin
 
 Upgrade pip:
 
@@ -16,6 +16,7 @@ Upgrade pip:
 Clone the repository:
 
     git clone https://github.com/punchagan/parktain.git
+
     cd parktain/
 
 ## Installation
@@ -51,4 +52,5 @@ Paste the following as is into config.yaml(or create it):
 ## Run
 
 To run your bot:
+
     python main.py
