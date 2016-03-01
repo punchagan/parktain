@@ -1,5 +1,10 @@
 """Tests for the bot."""
 
+# Just setup db without any fixture magic.
+from parktain.main import Base, engine
+Base.metadata.create_all(engine)
+
+
 def test_no_logger_crash_if_no_user():
     # Given
     from parktain.main import logger
