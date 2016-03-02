@@ -96,7 +96,7 @@ def logger(user, channel, message):
         user_id=user or 'USLACKBOT',
         channel_id=channel,
         message=message,
-        timestamp=datetime.now()
+        timestamp=datetime.utcnow()
     )
     session.add(message_log)
     session.commit()
