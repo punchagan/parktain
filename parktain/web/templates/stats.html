@@ -1,0 +1,10 @@
+<!doctype html>
+<title>Stats</title>
+
+<h1>Stats for Park</h1>
+
+<ul>
+  {% for entry in stats %}
+    <li>{{entry.day}}  {{entry.count}}</li>
+  {% endfor %}
+</ul>
