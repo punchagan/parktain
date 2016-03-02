@@ -8,6 +8,7 @@ from os.path import abspath, dirname, join
 from flask import Flask, redirect, render_template, url_for
 from flask_dance.contrib.slack import make_slack_blueprint, slack
 import yaml
+from sqlalchemy.sql import extract
 
 # Local library
 from parktain.main import session, URL_RE
@@ -15,6 +16,8 @@ from parktain.models import Base, Channel, engine, Message, User
 from parktain.web.utils import format_slack_message, get_id_name_mapping_from_db
 
 HERE = dirname(abspath(__file__))
+DOW = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
 
 def get_app_config():
     path_to_yaml = join(HERE, '..', 'config.yaml')
@@ -82,6 +85,22 @@ def show_links(days=0):
     context = {'links': links, 'date': day}
 
     return render_template('clickbaits.html', **context)
+
+
+@app.route("/stats/")
+def show_stats():
+    if not slack.authorized:
+        return redirect(url_for("slack.login"))
+
+    dow = extract('dow', Message.timestamp)
+    stats = {
+        i: session.query(Message).filter(dow == i).count() for i in range(7)
+    }
+    print(stats)
+    stats = [{'day': weekday, 'count': stats[i]} for i, weekday in enumerate(DOW)]
+    context = {'stats': stats}
+
+    return render_template('stats.html', **context)
 
 
 if __name__ == "__main__":
