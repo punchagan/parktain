@@ -1,0 +1,138 @@
+ol, li { padding: 0; margin: 0; list-style: none;}
+h1 {
+  font-size: 1.5em;
+  margin: 70px 42px;
+}
+
+.activity-chart, h1 {color: #525252;}
+.days li, .day-key { background: #eee; }
+.activity-chart {
+  width: 720px;
+  height: 205px;
+  padding-left: 110px; /* center in container */
+  margin: 50px 150px;
+  position: relative;
+
+  /*outline: solid;*/
+}
+
+/*** day of week heading ***/
+
+.days-of-week {
+  width: 15px;
+  position: absolute;
+  left: -10px;
+  top: 80px;
+}
+
+@-moz-document url-prefix() {
+  .days-of-week { left: 23px; }
+}
+
+.days-of-week {
+    font-size: 0.7em;
+    margin-left: -2em;
+}
+.days-of-week li:nth-child(2) { margin: 13px 0; }
+
+/*** month headings ***/
+
+.month ol {
+  position: absolute;
+  top: 40px;
+  left: -30px;
+}
+
+.month li {
+  float: right;
+  margin-left: 39px;
+  font-size: 0.75em;
+}
+
+/*** draw days ***/
+
+.days {
+  font-size: 0.75em;
+  margin-top: 15px;
+  float: right;  /* needed to float onto screen */
+}
+
+/* offset so days of the week line up
+over-specified to win specificity battle */
+.activity-chart .offset:hover { outline: none; }
+.activity-chart .offset { background: none; }
+
+/* create vertical weeks */
+.week {
+  width: 108px;
+  transform: rotate(90deg);
+}
+
+.days li, .key li {
+  width: 12px;
+  height: 12px;
+  float: right; /* order days starting at the bottom right */
+}
+
+.days .bold { font-weight: bold; }
+.days li {  margin: 1.5px; }
+
+/*** color-code by activity level ***/
+.activity-chart .activity { background: #d6e685; }
+.activity-chart .activity-two { background: #8cc665; }
+.activity-chart .activity-three { background: #44a340; }
+.activity-chart .activity-four { background: #1e6823; }
+
+.key {
+  position: absolute;
+  bottom: 0;
+  right: 55px;
+}
+
+.key ul {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.key li {  margin: 0px 2px; }
+
+/*** tooltips ***/
+
+.days li .tooltip { display: none; }
+.days li:hover
+{
+  /*outline disabled due to firefox cross-broswer issue */
+  /*outline: 1px solid #555;*/
+  position: relative;
+  z-index: 3;
+}
+
+.days li:hover .tooltip {
+  transform: rotate(-90deg);
+  display: block;
+  position: absolute;
+  /* top & left are reversed because the calendar is rotated 90 deg */
+  top: -13px;
+  left: -85px;
+  width: 100px;
+  padding: 10px 5px;
+  text-align: center;
+  background-color: #333;
+  color: #f1f1f1;
+}
+
+/*** little triangle on the tooltip ***/
+.tooltip:before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+
+  bottom: -10px;
+  right: 50px;
+
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 11px solid #333;
+}

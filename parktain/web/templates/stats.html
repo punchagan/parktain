@@ -1,12 +1,39 @@
 {% extends "layout.html" %}
+
 {% block title %}Usage Stats{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/stats.css')}}" />
+{% endblock %}
+
+{% block extra_js %}
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/stats.js')}}"></script>
+{% endblock %}
 
 {% block content %}
   <h1>Stats for Park</h1>
 
-  <ul>
-    {% for entry in stats %}
-      <li>{{entry.day}}  {{entry.count}}</li>
-    {% endfor %}
-  </ul>
+  <div class = "activity-chart">
+    <h1>Stats Calendar</h1>
+    <ol class = "days-of-week">
+      <li>M</li>
+      <li>W</li>
+      <li>F</li>
+    </ol>
+    <div id = "month" class = "month"></div>
+    <div id = "days" class = "days"></div>
+    <div class = "key">
+      <span>Less</span>
+      <ul>
+        <li class = "activity-four"></li>
+        <li class = "activity-three"></li>
+        <li class = "activity-two"></li>
+        <li class = "activity"></li>
+        <li class = "day-key"></li>
+      </ul>
+      <span>More</span>
+    </div>
+  </div>
 {% endblock %}
