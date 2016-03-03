@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% block head %}
+      {% block extra_js %}
+      {% endblock %}
+      <link rel="stylesheet" href="style.css" />
+      {% block extra_css %}
+      {% endblock %}
+      <title>{% block title %}{% endblock %} - Park on the Web</title>
+    {% endblock %}
+  </head>
+
+  <body>
+    <div id="content">{% block content %}{% endblock %}</div>
+  </body>
+</html>

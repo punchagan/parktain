@@ -1,18 +1,21 @@
-<!doctype html>
-<title>Links</title>
+{% extends "layout.html" %}
 
-<h1>Links posted on {{date.strftime('%Y-%m-%d')}}</h1>
+{% block title %} Links {% endblock %}
 
-{% for link in links %}
-  <div>
+{% block content %}
+  <h1>Links posted on {{date.strftime('%Y-%m-%d')}}</h1>
+
+  {% for link in links %}
     <div>
-      <span><a href="{{ link.url }}">{{ link.title }}</a><span> by @{{link.user}} in #{{link.channel}} at {{link.timestamp}}
+      <div>
+        <span><a href="{{ link.url }}">{{ link.title }}</a><span> by @{{link.user}} in #{{link.channel}} at {{link.timestamp}}
+      </div>
+      <div>
+        <small>{{link.message}}</small>
+      </div>
     </div>
-    <div>
-      <small>{{link.message}}</small>
-    </div>
-  </div>
-  <hr/>
-  <br/>
-  <br/>
-{% endfor %}
+    <hr/>
+    <br/>
+    <br/>
+  {% endfor %}
+{% endblock %}

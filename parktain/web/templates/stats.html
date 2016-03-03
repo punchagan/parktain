@@ -1,10 +1,12 @@
-<!doctype html>
-<title>Stats</title>
+{% extends "layout.html" %}
+{% block title %}Usage Stats{% endblock %}
 
-<h1>Stats for Park</h1>
+{% block content %}
+  <h1>Stats for Park</h1>
 
-<ul>
-  {% for entry in stats %}
-    <li>{{entry.day}}  {{entry.count}}</li>
-  {% endfor %}
-</ul>
+  <ul>
+    {% for entry in stats %}
+      <li>{{entry.day}}  {{entry.count}}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
