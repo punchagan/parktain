@@ -5,10 +5,10 @@ import datetime
 from os.path import abspath, dirname, join
 
 # 3rd party library.
-from flask import Flask, redirect, render_template, url_for
+from flask import Flask, jsonify, redirect, render_template, url_for
 from flask_dance.contrib.slack import make_slack_blueprint, slack
 import yaml
-from sqlalchemy.sql import extract
+from sqlalchemy.sql import extract, func
 
 # Local library
 from parktain.main import session, URL_RE
@@ -96,11 +96,53 @@ def show_stats():
     stats = {
         i: session.query(Message).filter(dow == i).count() for i in range(7)
     }
-    print(stats)
     stats = [{'day': weekday, 'count': stats[i]} for i, weekday in enumerate(DOW)]
     context = {'stats': stats}
 
     return render_template('stats.html', **context)
+
+
+@app.route("/stats/yearly/")
+def yearly_stats():
+    if not slack.authorized:
+        return redirect(url_for("slack.login"))
+
+    day = datetime.datetime.utcnow().date()
+    # FIXME: Use dateutil.relativedelta or something
+    last_year = day + datetime.timedelta(-365)
+
+    doy = extract('doy', Message.timestamp)
+    messages = session.query(Message.timestamp, func.count(doy))\
+                      .filter(last_year < Message.timestamp).group_by(doy)
+
+    response = {date.strftime('%Y-%m-%d'): count for date, count in messages.all()}
+
+    # FIXME: Clean up ugly code!
+    max_count = max(response.values())
+    min_count = min(response.values())
+    if min_count == 0:
+        min_count = 1
+    delta = int((max_count - min_count)/4)+1
+    ranges = list(range(min_count, max_count, delta)) + [max_count+1]
+    values = ['day-key', 'activity', 'activity-two', 'activity-three', 'activity-four']
+
+    def _get_value(count):
+        value = values[0]
+        for i, x in enumerate(ranges[:-1]):
+            if x <= count < ranges[i+1]:
+                value = values[i+1]
+                break
+
+        return value
+
+
+    response = {
+        key: _get_value(count) for key, count in response.items()
+    }
+
+    return jsonify(response)
+
+
 
 
 if __name__ == "__main__":

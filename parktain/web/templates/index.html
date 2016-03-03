@@ -1,20 +1,23 @@
-<!doctype html>
-<title>Park on the Web</title>
+{% extends "layout.html" %}
 
-<h1>Welcome to Park!</h1>
+{% block title %} Welcome {% endblock %}
 
-<p>This is our home on the web.</p>
+{% block content %}
+  <h1>Welcome to Park!</h1>
 
-<p>
-  We currently host a <a href="{{url_for('show_links')}}"> link aggregation
+  <p>This is our home on the web.</p>
+
+  <p>
+    We currently host a <a href="{{url_for('show_links')}}"> link aggregation
     service here</a>.
 
-  By default, the links posted today are shown.  You can go back <code>n</code>
-  days, by adding a <code>/n</code> at the end of the url. For example, click
-  here to see links posted <a href="{{url_for('show_links', days=7)}}">7 days ago</a>
+    By default, the links posted today are shown.  You can go back <code>n</code>
+    days, by adding a <code>/n</code> at the end of the url. For example, click
+    here to see links posted <a href="{{url_for('show_links', days=7)}}">7 days ago</a>
 
-</p>
+  </p>
 
-<p>
-In future, we hope to have a lot more going on here!
-</p>
+  <p>
+    In future, we hope to have a lot more going on here!
+  </p>
+{% endblock %}
