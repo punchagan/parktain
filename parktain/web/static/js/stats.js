@@ -22,8 +22,8 @@ var compute_stats = {
         if (count == 0) {
             return this.class_labels[0];
         } else {
-            var i = Math.max(1, Math.floor((count - this.min)/4)+1);
-            return this.class_labels[i];
+            var i = Math.max(1, Math.floor((count - this.min)/this.range)+1);
+            return this.class_labels[Math.min(i, 4)];
         }
     }
 }
