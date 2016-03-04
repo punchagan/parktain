@@ -1,5 +1,4 @@
 var compute_stats = {
-
     class_labels: ['day-key', 'activity', 'activity-two', 'activity-three', 'activity-four'],
 
     get_values: function(obj){
@@ -31,6 +30,35 @@ var compute_stats = {
 
 
 var drawing = function(data){
+
+    // We are assuming there is moment.js. Use jquery!
+
+    var chart = $('.activity-chart');
+    var title = $('<h1>').text('Stats Calendar').appendTo(chart);
+
+    var days_of_week = $('<ol class="days-of-week">')
+        .append($('<li>').text('M'))
+        .append($('<li>').text('W'))
+        .append($('<li>').text('F'))
+        .appendTo(chart);
+
+    var month = $('<div id="month" class="month">').appendTo(chart);
+    var days = $('<div id="days" class="days">').appendTo(chart);
+
+    var colors = $('<ul>')
+        .append($('<li class="activity-four">'))
+        .append($('<li class="activity-three">'))
+        .append($('<li class="activity-two">'))
+        .append($('<li class="activity">'))
+        .append($('<li class="day-key">'))
+
+    var legend = $('<div class="key">')
+        .append($('<span>Less</span>'))
+        .append(colors)
+        .append($('<span>More</span>'))
+        .appendTo(chart);
+
+
     /*** draw months ***/
 
     var month = moment();
