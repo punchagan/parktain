@@ -34,6 +34,11 @@ var drawing = function(data){
     // We are assuming there is moment.js. Use jquery!
 
     var chart = $('.activity-chart');
+
+    /* Remove loader */
+    chart.find('.loader').remove();
+
+
     var title = $('<h1>').text('Stats Calendar').appendTo(chart);
 
     var days_of_week = $('<ol class="days-of-week">')
@@ -57,7 +62,6 @@ var drawing = function(data){
         .append(colors)
         .append($('<span>More</span>'))
         .appendTo(chart);
-
 
     /*** draw months ***/
 
