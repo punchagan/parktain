@@ -116,33 +116,7 @@ def yearly_stats():
                       .filter(last_year < Message.timestamp).group_by(doy)
 
     response = {date.strftime('%Y-%m-%d'): count for date, count in messages.all()}
-
-    # FIXME: Clean up ugly code!
-    max_count = max(response.values())
-    min_count = min(response.values())
-    if min_count == 0:
-        min_count = 1
-    delta = int((max_count - min_count)/4)+1
-    ranges = list(range(min_count, max_count, delta)) + [max_count+1]
-    values = ['day-key', 'activity', 'activity-two', 'activity-three', 'activity-four']
-
-    def _get_value(count):
-        value = values[0]
-        for i, x in enumerate(ranges[:-1]):
-            if x <= count < ranges[i+1]:
-                value = values[i+1]
-                break
-
-        return value
-
-
-    response = {
-        key: _get_value(count) for key, count in response.items()
-    }
-
     return jsonify(response)
-
-
 
 
 if __name__ == "__main__":
