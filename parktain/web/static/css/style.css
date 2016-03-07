@@ -4,14 +4,14 @@
     max-width: 900px;
 }
 
-.pagination.previous {
+.pagination .previous {
     float: left;
 }
 
-.pagination.next {
+.pagination .next {
     float: right;
 }
 
-.pagination.random {
+.pagination .random {
     margin-left: 40%;
 }
