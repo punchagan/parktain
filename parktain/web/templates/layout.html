@@ -4,7 +4,7 @@
     {% block head %}
       {% block extra_js %}
       {% endblock %}
-      <link rel="stylesheet" href="style.css" />
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}" />
       {% block extra_css %}
       {% endblock %}
       <title>{% block title %}{% endblock %} - Park on the Web</title>
