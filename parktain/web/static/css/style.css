@@ -11,3 +11,7 @@
 .pagination.next {
     float: right;
 }
+
+.pagination.random {
+    margin-left: 40%;
+}

@@ -9,6 +9,8 @@
     <a class="pagination previous" href="{{url_for('show_links', days=previous)}}"> < </a>
   {% endif %}
 
+  <a class="pagination random" href="{{url_for('random_link')}}"> Stumble to random link </a>
+
   {% if next %}
     <a class="pagination next" href="{{url_for('show_links', days=next)}}">  > </a>
   {% endif %}

@@ -49,6 +49,23 @@ def index():
     return render_template('index.html', **context)
 
 
+@app.route("/random_link/")
+def random_link():
+    if not slack.authorized:
+        return redirect(url_for("slack.login"))
+
+    url = None
+    while url is None:
+        messages = session.query(Message).order_by(func.random()).limit(10).all()
+        for message in messages:
+            for url_ in URL_RE.findall(message.message):
+                url = url_.split('|', 1)[0] if '|' in url_ else url_
+                break
+            if url is not None:
+                break
+
+    return redirect(url)
+
 
 @app.route("/links/")
 @app.route("/links/<days>/")
@@ -58,8 +75,7 @@ def show_links(days=0):
 
     days = int(days)
     day = datetime.datetime.utcnow().date() - datetime.timedelta(days=days)
-    next_ = day + datetime.timedelta(days=1)
-    days_messages = session.query(Message).filter(day < Message.timestamp).filter(Message.timestamp < next_).order_by(Message.timestamp).all()
+    days_messages = _get_days_messages(day)
     links = []
 
     channels = get_id_name_mapping_from_db(session, Channel)
@@ -123,6 +139,20 @@ def yearly_stats():
 
     response = {date.strftime('%Y-%m-%d'): count for date, count in messages.all()}
     return jsonify(response)
+
+
+#### Helpers ####
+
+def _get_days_messages(day):
+    """Return all messages sent on given day."""
+
+    next_ = day + datetime.timedelta(days=1)
+    days_messages = session.query(Message)\
+                           .filter(day < Message.timestamp)\
+                           .filter(Message.timestamp < next_)\
+                           .order_by(Message.timestamp).all()
+
+    return days_messages
 
 
 if __name__ == "__main__":
