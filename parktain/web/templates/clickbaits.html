@@ -5,6 +5,15 @@
 {% block content %}
   <h1>Links posted on {{date.strftime('%Y-%m-%d')}}</h1>
 
+  {% if previous %}
+    <a class="pagination previous" href="{{url_for('show_links', days=previous)}}"> < </a>
+  {% endif %}
+
+  {% if next %}
+    <a class="pagination next" href="{{url_for('show_links', days=next)}}">  > </a>
+  {% endif %}
+
+
   {% for link in links %}
     <div>
       <div>

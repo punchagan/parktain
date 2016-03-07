@@ -56,7 +56,8 @@ def show_links(days=0):
     if not slack.authorized:
         return redirect(url_for("slack.login"))
 
-    day = datetime.datetime.utcnow().date() - datetime.timedelta(days=int(days))
+    days = int(days)
+    day = datetime.datetime.utcnow().date() - datetime.timedelta(days=days)
     next_ = day + datetime.timedelta(days=1)
     days_messages = session.query(Message).filter(day < Message.timestamp).filter(Message.timestamp < next_).order_by(Message.timestamp).all()
     links = []
@@ -77,12 +78,17 @@ def show_links(days=0):
                 'user': users.get(message.user_id, '<deleted-user>'),
                 'channel': channels.get(message.channel_id, '<deleted-channel>'),
                 'message': format_slack_message(message.message, channels, users),
-                'timestamp': message.timestamp
+                'timestamp': message.timestamp,
             }
 
             links.append(link)
 
-    context = {'links': links, 'date': day}
+    context = {
+        'links': links,
+        'date': day,
+        'previous': days + 1,
+        'next': days - 1 if days > 0 else None,
+    }
 
     return render_template('clickbaits.html', **context)
 

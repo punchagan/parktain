@@ -3,3 +3,11 @@
     margin: auto;
     max-width: 900px;
 }
+
+.pagination.previous {
+    float: left;
+}
+
+.pagination.next {
+    float: right;
+}
