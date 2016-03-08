@@ -124,14 +124,16 @@ def source_code(user, channel, message):
 
 #### Cron functions ###########################################################
 
-@bot.cron('0 0 * * *')
+MORNING_IST = '30 1 * * *'  # 6:00 am IST
+
+@bot.cron(MORNING_IST)
 def checkins_reminder():
     """Prompt for posting daily checkins."""
     date = datetime.now().strftime('%d %B, %Y')
     bot.speak('Morning! What are you doing on {}!'.format(date), "#checkins")
 
 
-@bot.cron('0 2 * * *')
+@bot.cron(MORNING_IST)
 def post_quote():
     """Post an inspirational quote."""
 
