@@ -4,10 +4,12 @@
 from datetime import datetime
 import json
 from os.path import abspath, dirname, exists, join
+import random
 import re
 
 # 3rd party library
 from gendo import Gendo
+import requests
 from sqlalchemy.orm import sessionmaker
 
 # Local library
@@ -128,7 +130,22 @@ def checkins_reminder():
     bot.speak('Morning! What are you doing on {}!'.format(date), "#checkins")
 
 
-# Run updates on information from slack, every hour.
+@bot.cron('0 2 * * *')
+def post_quote():
+    """Post an inspirational quote."""
+
+    api_url = "http://api.theysaidso.com/qod.json?category={}"
+    categories = ['inspire', 'life']
+    try:
+        response = requests.get(api_url.format(random.choice(categories)))
+        quote = response.json()['contents']['quotes'][0]
+        text = '{} -- {}'.format(quote['quote'], quote['author'])
+        bot.speak(text, "#inspiration")
+
+    except requests.RequestException:
+        bot.speak('I am having an uninspired day. Hope you do better!', "#inspiration")
+
+
 @bot.cron('* */1 * * *')
 def update_info():
     """Update information about slack channels and users."""
