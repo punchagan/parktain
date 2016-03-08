@@ -16,7 +16,6 @@ from parktain.models import Base, Channel, engine, Message, User
 from parktain.web.utils import format_slack_message, get_id_name_mapping_from_db
 
 HERE = dirname(abspath(__file__))
-DOW = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 
 def get_app_config():
@@ -118,10 +117,8 @@ def show_stats():
     stats = {
         i: session.query(Message).filter(dow == i).count() for i in range(7)
     }
-    stats = [{'day': weekday, 'count': stats[i]} for i, weekday in enumerate(DOW)]
-    context = {'stats': stats}
 
-    return render_template('stats.html', **context)
+    return render_template('stats.html')
 
 
 @app.route("/stats/yearly/")
