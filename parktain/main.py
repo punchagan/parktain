@@ -126,6 +126,7 @@ def source_code(user, channel, message):
 
 @bot.cron('0 0 * * *')
 def checkins_reminder():
+    """Prompt for posting daily checkins."""
     date = datetime.now().strftime('%d %B, %Y')
     bot.speak('Morning! What are you doing on {}!'.format(date), "#checkins")
 
