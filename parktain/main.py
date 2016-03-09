@@ -142,8 +142,8 @@ def post_quote():
     try:
         response = requests.get(api_url.format(random.choice(categories)))
         quote = response.json()['contents']['quotes'][0]
-        text = '{} -- {}'.format(quote['quote'], quote['author'])
-        bot.speak(text, "#inspiration")
+        text = '{}'.format(quote['quote'])
+        bot.speak(text, "#inspiration", quote['author'])
 
     except requests.RequestException:
         bot.speak('I am having an uninspired day. Hope you do better!', "#inspiration")
