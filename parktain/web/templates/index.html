@@ -8,13 +8,25 @@
   <p>This is our home on the web.</p>
 
   <p>
-    We currently host a <a href="{{url_for('show_links')}}"> link aggregation
-    service here</a>.
+      We host a couple of services here, right now.
+      <ul>
+          <li>
+              Our <a href="{{url_for('show_links')}}"> link aggregation service</a>.
 
-    By default, the links posted today are shown.  You can go back <code>n</code>
-    days, by adding a <code>/n</code> at the end of the url. For example, click
-    here to see links posted <a href="{{url_for('show_links', days=7)}}">7 days ago</a>
+              We also have a bookmarklet to stumble to a random link we
+              aggregated.
+              <a style="border: 1px dashed;"
+                 href="javascript:void(document.location.href='https://park.muse-amuse.in/random_link/')">
+                  park-stumble
+              </a>
 
+              Drag and drop it to your bookmarks bar!
+
+          </li>
+
+          <li>
+              A simple <a href="{{url_for('show_stats')}}">stats</a> page.
+          </li>
   </p>
 
   <p>
