@@ -24,7 +24,8 @@ URL_RE = re.compile('<(https{0,1}://.*?)>')
 config_path = join(HERE, 'config.yaml')
 bot = Gendo.config_from_yaml(config_path) if exists(config_path) else Gendo()
 
-#### Helper functions #########################################################
+# Helper functions #########################################################
+
 
 def all_messages(user, channel, message):
     return True
@@ -90,7 +91,7 @@ def update_user_list():
     session.commit()
 
 
-#### Bot Functions ############################################################
+# Bot Functions ############################################################
 
 @bot.listen_for(all_messages)
 def logger(user, channel, message):
@@ -102,6 +103,7 @@ def logger(user, channel, message):
     )
     session.add(message_log)
     session.commit()
+
 
 @bot.handle_event('channel_created', target_channel='general')
 def notify_general(event_data):
@@ -115,6 +117,7 @@ def notify_general(event_data):
     response = '{{user.username}} created {{channel.name}}.\n{}'.format(invite_me)
     return user, channel, response
 
+
 @bot.listen_for('where do you live')
 @is_mention
 def source_code(user, channel, message):
@@ -122,9 +125,10 @@ def source_code(user, channel, message):
     message = 'Well, I live in your hearts...\nYou can change me from here {}, though.'
     return message.format(repo_url)
 
-#### Cron functions ###########################################################
+# Cron functions ###########################################################
 
 MORNING_IST = '30 1 * * *'  # 6:00 am IST
+
 
 @bot.cron(MORNING_IST)
 def checkins_reminder():

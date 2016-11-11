@@ -13,6 +13,7 @@ engine.echo = False
 
 Base = declarative_base()
 
+
 class Channel(Base):
     __tablename__ = 'channels'
     id = Column(String, primary_key=True, index=True)
