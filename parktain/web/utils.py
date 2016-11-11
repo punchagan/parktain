@@ -1,10 +1,15 @@
 """ Utility functions. """
 
 # Standard library
+from os.path import abspath, dirname, join
 import re
 
+from flask_dance.contrib.slack import make_slack_blueprint
+import yaml
 
 SPECIAL_RE = re.compile('<(.*?)>')
+HERE = dirname(abspath(__file__))
+
 
 def get_id_name_mapping_from_db(session, cls):
     """ Return a mapping of id to name for cls objects in DB."""
@@ -52,3 +57,23 @@ def format_slack_message(message, channels, users):
         # use the text following the pipe as the link label
 
     return message_
+
+
+def get_app_config():
+    path_to_yaml = join(HERE, '..', 'config.yaml')
+    with open(path_to_yaml, 'r') as ymlfile:
+        web = yaml.load(ymlfile).get('web')
+
+    default = {'client_id': '', 'client_secret': '', 'secret_key': ''}
+    return web or default
+
+
+def configure_slack_auth(app):
+    config = get_app_config()
+    app.secret_key = config['secret_key']
+    blueprint = make_slack_blueprint(
+        client_id=config['client_id'],
+        client_secret=config['client_secret'],
+        scope=["identify", "chat:write:bot"],
+    )
+    app.register_blueprint(blueprint, url_prefix="/login")

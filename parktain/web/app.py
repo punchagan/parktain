@@ -2,43 +2,22 @@
 
 # Standard library.
 import datetime
-from os.path import abspath, dirname, join
 
 # 3rd party library.
 from flask import Flask, jsonify, redirect, render_template, url_for
-from flask_dance.contrib.slack import make_slack_blueprint, slack
-import yaml
+from flask_dance.contrib.slack import slack
 from sqlalchemy.sql import extract, func
 
 # Local library
 from parktain.main import session, URL_RE
 from parktain.models import Base, Channel, engine, Message, User
-from parktain.web.utils import format_slack_message, get_id_name_mapping_from_db
+from parktain.web.utils import format_slack_message, get_id_name_mapping_from_db, configure_slack_auth
 
-HERE = dirname(abspath(__file__))
-
-
-def get_app_config():
-    path_to_yaml = join(HERE, '..', 'config.yaml')
-    with open(path_to_yaml, 'r') as ymlfile:
-        web = yaml.load(ymlfile).get('web')
-
-    default = {'client_id': '', 'client_secret': '', 'secret_key': ''}
-    return web or default
-
-
-config = get_app_config()
 app = Flask(__name__)
-app.secret_key = config['secret_key']
-blueprint = make_slack_blueprint(
-    client_id=config['client_id'],
-    client_secret=config['client_secret'],
-    scope=["identify", "chat:write:bot"],
-)
-app.register_blueprint(blueprint, url_prefix="/login")
+configure_slack_auth(app)
 
 
-#### Routes ####
+# Routes ####
 
 @app.route("/")
 def index():
@@ -138,7 +117,7 @@ def yearly_stats():
     return jsonify(response)
 
 
-#### Helpers ####
+# Helpers ####
 
 def _get_days_messages(day):
     """Return all messages sent on given day."""
