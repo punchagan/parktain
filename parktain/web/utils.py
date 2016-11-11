@@ -1,10 +1,12 @@
 """ Utility functions. """
 
 # Standard library
+from functools import wraps
 from os.path import abspath, dirname, join
 import re
 
-from flask_dance.contrib.slack import make_slack_blueprint
+import flask
+from flask_dance.contrib.slack import make_slack_blueprint, slack
 import yaml
 
 SPECIAL_RE = re.compile('<(.*?)>')
@@ -77,3 +79,12 @@ def configure_slack_auth(app):
         scope=["identify", "chat:write:bot"],
     )
     app.register_blueprint(blueprint, url_prefix="/login")
+
+
+def slack_authorized(f):
+    @wraps(f)
+    def _wrapper(*args, **kwargs):
+        if not slack.authorized:
+            return flask.redirect(flask.url_for('slack.login'))
+        return f(*args, **kwargs)
+    return _wrapper

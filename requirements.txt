@@ -4,4 +4,4 @@ SQLAlchemy==1.0.12
 # Web app requirements
 Flask==0.10.1
 Flask-Dance==0.8.2
--e git+https://github.com/punchagan/slack-export-viewer.git@slack-auth#egg=slackviewer
+-e git+https://github.com/hfaran/slack-export-viewer.git#egg=slackviewer
