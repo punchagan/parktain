@@ -72,3 +72,4 @@ TAGS
 
 # autoenv file.
 .env
+/slack-export.zip
