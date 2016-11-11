@@ -11,7 +11,7 @@ from sqlalchemy.sql import extract, func
 # Local library
 from parktain.main import session, URL_RE
 from parktain.models import Base, Channel, engine, Message, User
-from parktain.web.utils import format_slack_message, get_id_name_mapping_from_db, configure_slack_auth
+from parktain.web.utils import format_slack_message, get_id_name_mapping_from_db, configure_slack_auth, slack_authorized
 
 app = Flask(__name__)
 configure_slack_auth(app)
@@ -20,18 +20,15 @@ configure_slack_auth(app)
 # Routes ####
 
 @app.route("/")
+@slack_authorized
 def index():
-    if not slack.authorized:
-        return redirect(url_for("slack.login"))
     context = {}
     return render_template('index.html', **context)
 
 
 @app.route("/random_link/")
+@slack_authorized
 def random_link():
-    if not slack.authorized:
-        return redirect(url_for("slack.login"))
-
     url = None
     while url is None:
         messages = session.query(Message).order_by(func.random()).limit(10).all()
@@ -47,10 +44,8 @@ def random_link():
 
 @app.route("/links/")
 @app.route("/links/<days>/")
+@slack_authorized
 def show_links(days=0):
-    if not slack.authorized:
-        return redirect(url_for("slack.login"))
-
     days = int(days)
     day = datetime.datetime.utcnow().date() - datetime.timedelta(days=days)
     days_messages = _get_days_messages(day)
@@ -88,10 +83,8 @@ def show_links(days=0):
 
 
 @app.route("/stats/")
+@slack_authorized
 def show_stats():
-    if not slack.authorized:
-        return redirect(url_for("slack.login"))
-
     dow = extract('dow', Message.timestamp)
     stats = {
         i: session.query(Message).filter(dow == i).count() for i in range(7)
@@ -101,10 +94,8 @@ def show_stats():
 
 
 @app.route("/stats/yearly/")
+@slack_authorized
 def yearly_stats():
-    if not slack.authorized:
-        return redirect(url_for("slack.login"))
-
     day = datetime.datetime.utcnow().date()
     # FIXME: Use dateutil.relativedelta or something
     last_year = day + datetime.timedelta(-365)
